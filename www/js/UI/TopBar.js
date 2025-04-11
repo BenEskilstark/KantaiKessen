@@ -25,7 +25,7 @@ export default class TopBar extends StatefulHTML {
             ${tickInterval ? "Pause" : "Play"}
           </button>
           <button onclick="closest('top-bar').toggleClickMode()">
-            ${mouse.clickMode == "SELECT" ? "Fire Mode (F)" : "Select Mode"}
+            ${mouse.clickMode == "MOVE" ? "Switch to Fire Mode (F)" : "Switch to Move Mode (M)"}
           </button>
         `;
     }
@@ -45,9 +45,10 @@ export default class TopBar extends StatefulHTML {
     toggleClickMode() {
         const { mouse } = this.getState();
         if (mouse.clickMode == "FIRE") {
-            this.dispatch({ type: "SET_CLICK_MODE", clickMode: "SELECT" });
+            this.dispatch({ type: "SET_CLICK_MODE", clickMode: "MOVE" });
         } else {
             this.dispatch({ type: "SET_CLICK_MODE", clickMode: "FIRE" });
         }
+        this.render(this.getState());
     }
 }

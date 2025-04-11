@@ -1,5 +1,5 @@
 import StatefulHTML from './StatefulHTML.js';
-import { convertGridPosToPixel, convertPixelToGridPos } from '../utils/coordinates.js';
+import { convertGridPosToPixel, convertGridScalarToPixel } from '../utils/coordinates.js';
 
 
 export default class GameBoard extends StatefulHTML {
@@ -25,9 +25,13 @@ export default class GameBoard extends StatefulHTML {
 
         for (const id in entities) {
             ctx.save();
-            const { x, y, color, radius, isSelected, target, firePos, range } = entities[id];
+            const entity = entities[id];
+            const {
+                x, y, color, radius, isSelected, target, firePos, range,
+                hp, maxhp
+            } = entity;
             const pos = convertGridPosToPixel(state, { x, y });
-            if (target) {
+            if (target && entity.isSelectable) {
                 const t = convertGridPosToPixel(state, target);
                 ctx.strokeStyle = "black";
                 ctx.lineWidth = 1;
@@ -48,11 +52,14 @@ export default class GameBoard extends StatefulHTML {
                 ctx.restore();
             }
             ctx.fillStyle = color;
-            ctx.font = "15px Arial";
-            ctx.strokeText("🚢", pos.x - radius / 2, pos.y + 3);
+            ctx.globalAlpha = 0.2;
             ctx.beginPath();
             ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
-            // ctx.fill();
+            ctx.fill();
+            ctx.globalAlpha = 1;
+            ctx.font = radius + "px Arial";
+            ctx.strokeText(entity.symbol, pos.x - radius / 1.5, pos.y + 3);
+
             if (isSelected) {
                 ctx.lineWidth = 2;
                 ctx.strokeStyle = "gold";
@@ -62,15 +69,23 @@ export default class GameBoard extends StatefulHTML {
                 ctx.lineWidth = 1;
                 ctx.strokeStyle = "red";
                 ctx.beginPath();
-                ctx.arc(pos.x, pos.y, range, 0, Math.PI * 2);
+                ctx.arc(pos.x, pos.y,
+                    convertGridScalarToPixel({ width }, range),
+                    0, Math.PI * 2);
                 ctx.stroke();
+            }
+            if (maxhp != null && hp > 0 && hp < maxhp) {
+                ctx.fillStyle = "red";
+                ctx.fillRect(pos.x - radius * 1.5, pos.y - radius * 1.5, radius * 3, 3);
+                ctx.fillStyle = "green";
+                ctx.fillRect(pos.x - radius * 1.5, pos.y - radius * 1.5, radius * 3 * hp / maxhp, 3);
             }
             ctx.restore();
         }
 
         if (mouse.downPos != null) {
             ctx.strokeStyle = "black";
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 1;
             const downPixel = convertGridPosToPixel(state, mouse.downPos);
             const mWidth = mouse.curPos.x - downPixel.x;
             const mHeight = mouse.curPos.y - downPixel.y;

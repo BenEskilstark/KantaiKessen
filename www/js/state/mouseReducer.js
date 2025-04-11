@@ -1,4 +1,5 @@
 import { convertGridPosToPixel, convertPixelToGridPos } from '../utils/coordinates.js';
+import { dist } from '../utils/vectors.js';
 
 export const mouseReducer = (state, action) => {
     if (state.mouse === undefined) {
@@ -6,7 +7,7 @@ export const mouseReducer = (state, action) => {
             downPos: null,
             curPos: null,
             upPos: null,
-            clickMode: "SELECT",
+            clickMode: "MOVE",
         };
     }
 
@@ -45,6 +46,7 @@ export const mouseReducer = (state, action) => {
             const max = { x: Math.max(toPos.x, fromPos.x), y: Math.max(toPos.y, fromPos.y) };
             for (const id in entities) {
                 const entity = entities[id];
+                if (!entity.isSelectable) continue;
                 if (entity.x >= min.x && entity.y >= min.y &&
                     entity.x <= max.x && entity.y <= max.y
                 ) {
@@ -56,7 +58,7 @@ export const mouseReducer = (state, action) => {
                 ...state,
                 mouse: {
                     ...mouse,
-                    clickMode: "SELECT",
+                    // clickMode: "MOVE",
                     downPos: null, curPos: null, piece: null
                 }
             };
@@ -68,10 +70,14 @@ export const mouseReducer = (state, action) => {
             for (const id in entities) {
                 const entity = entities[id];
                 if (entity.isSelected) {
-                    if (mouse.clickMode == "SELECT") {
+                    if (mouse.clickMode == "MOVE") {
                         entity.target = { ...toPos };
-                    } else {
-                        entity.firePos = { ...toPos };
+                    } else if (mouse.clickMode == "FIRE") {
+                        if (dist(entity, toPos) > entity.range) {
+                            entity.firePos = null;
+                        } else {
+                            entity.firePos = { ...toPos };
+                        }
                     }
 
                 }
