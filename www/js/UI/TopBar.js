@@ -8,6 +8,18 @@ export default class TopBar extends StatefulHTML {
         const state = this.getState();
         if (state.tickInterval == null) this.togglePause();
         this.render(this.getState());
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('keydown', (event) => {
+                if (event.code === 'KeyF') {
+                    this.dispatch({ type: "SET_CLICK_MODE", clickMode: "FIRE" });
+                    this.render(this.getState());
+                } else if (event.code === 'KeyM') {
+                    this.dispatch({ type: "SET_CLICK_MODE", clickMode: "MOVE" });
+                    this.render(this.getState());
+                }
+            });
+        });
     }
 
     onChange(state) {

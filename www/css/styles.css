@@ -1,23 +1,23 @@
 body {
-  box-sizing: border-box;
-  margin: 0;
+    box-sizing: border-box;
+    margin: 0;
 }
 
 stateful-client {
-  display: inline-block;
+    display: inline-block;
 }
 
-game-board {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: tan;
-  width: 500;
-  height: 500;
-  border: 1px solid black;
-}
+/* game-board {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: tan;
+    width: 500;
+    height: 500;
+    border: 1px solid black;
+} */
 
 .boardcanvas {
-  width: 85%;
-  height: 85%;
+    width: 85%;
+    height: 85%;
 }
