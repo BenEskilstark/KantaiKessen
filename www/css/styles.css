@@ -3,9 +3,10 @@ body {
     margin: 0;
 }
 
+/* 
 stateful-client {
     display: inline-block;
-}
+} */
 
 /* game-board {
     display: flex;
@@ -16,8 +17,3 @@ stateful-client {
     height: 500;
     border: 1px solid black;
 } */
-
-.boardcanvas {
-    width: 85%;
-    height: 85%;
-}
